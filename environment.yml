@@ -1,8 +1,6 @@
 name: pyTruthTable
-=======
 channels:
   - defaults
   - bioconda
 dependencies:
   - customtkinter
-
