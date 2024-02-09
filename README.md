@@ -40,7 +40,3 @@ python truth_table_generator.py
 - **Input Field:** A large entry where the logical expression is displayed.
 - **Buttons:** For inputting variables, operators, and controlling the display (clear and delete).
 - **Truth Table Output:** Upon pressing the `=` button, the truth table is generated and printed to the console, not in the GUI itself.
-
----
-
-This documentation provides an overview and guide on how to use the Truth Table Generator script.
