@@ -4,4 +4,9 @@ channels:
   - bioconda
   - conda-forge
 dependencies:
+  - python>=3.8
+  - anaconda
+  - pip
   - customtkinter
+  - pip:
+      truth-table-generator

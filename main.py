@@ -1,113 +1,108 @@
-from customtkinter import *
+import re
 from itertools import product
-
-set_appearance_mode("dark")
-
-app = CTk()
-
-app.title("Truth Table")
-app.geometry("400x500")
-
-display = CTkEntry(app,width=400,height=100,font=("Mono", 30),fg_color='grey')
-display.pack()
-
-buttons = CTkFrame(app,width=400,height=500)
-buttons.pack()
-
-# ---------------Functions---------------
-
-i = 0
-
-def get_letters(n):
-    global i
-    display.insert(i, n)
-    i += 1
+from tabulate import tabulate
+from ttg import Truths
 
 
-def get_opers(operator):
-    global i
-    opers_len = len(operator)
-    display.insert(i, operator)
-    i += opers_len
+def verificar_entrada(entrada): 
+    # Function that verifies if an input is a valid expression.
+    # Currently checks for lowercase letters and specified symbols.
+    return bool(re.match("^[a-z^/|(),-]+$", entrada))
 
-def clear_display():
-    display.delete(0, END)
+def final_result(variables, expression2):
+    table = Truths(variables, list(expression2), ints=False)
+    print(table)
 
-def undo():
-    display_state = display.get()
-    if len(display_state):
-        display_new_state = display_state[:- 1]
-        clear_display()
-        display.insert(0, display_new_state)
+expression = input("Enter expression> ")
+
+if not expression:
+    print("ERROR: Please enter a valid expression.")
+elif not verificar_entrada(expression):
+    print("ERROR: Enter a valid expression (no spaces, lowercase letters, and specified symbols).")
+else:
+    if "," not in expression:
+        table_data = []
+        operators = {"^": " and ", "v": " or ", "-": " not ", "x": " != ", "|": " = ", "/": " => "}
+        
+        # "^" and
+        # "v" or
+        # "-" not
+        # "x" xor
+        # "/" implication
+        # "|" if and only if
+
+        # Separar del input las variables y la expresion
+        variables = sorted({i for i in expression if i.isalpha() and i != "v" and i != "x"})
+
+        # Reemplazar el símbolo a letras
+        expression2 = expression
+
+        for i in expression:
+            if i in operators:
+                expression2 = expression2.replace(i, operators[i])
+
+        subexpresions = re.findall(r"\([^()]*\)", expression)
+        
+        sub = []
+
+        for subexpresion in subexpresions:
+            subexpression2 = subexpresion
+            for i in subexpresion:
+                if i in operators:
+                    subexpression2 = subexpression2.replace(i, operators[i])
+            sub.append(subexpression2)
+        sub.append(expression2)
+
+        final_result(variables, sub)
+
+
+    elif "," in expression:  # Si hay una coma en la expresión (dos expresiones separadas por coma)
+        expression = expression.split(",")  # Dividir las dos expresiones
+        
+        # Obtener las dos expresiones separadas
+        expression_1 = expression[0]
+        expression_2 = expression[1]
+
+
+        table_data = []  # Lista para almacenar los resultados
+        operators = {"^": " and ", "v": " or ", "-": " not ", "X": "!=", "|": "==", "/": "<="}  # Definir los operadores lógicos y sus equivalentes en Python
+
+        # Obtener las variables de cada expresión
+        variables_1 = {i for i in expression_1 if i.isalpha() and i != "v" and i != "x"}
+        variables_2 = {i for i in expression_2 if i.isalpha() and i != "v" and i != "x"}
+
+        # Reemplazar los símbolos de operadores por sus equivalentes en Python para cada expresión
+        expression2_1 = expression_1
+        expression2_2 = expression_2
+        for i in expression_1:
+            if i in operators:
+                expression2_1 = expression2_1.replace(i, operators[i])
+        for i in expression_2:
+            if i in operators:
+                expression2_2 = expression2_2.replace(i, operators[i])
+
+        # Generar todas las combinaciones posibles de valores de verdad para las variables de ambas expresiones
+        var_1 = product([True, False], repeat=len(variables_1))
+        var_2 = product([True, False], repeat=len(variables_2))
+
+        # Evaluar ambas expresiones para todas las combinaciones posibles de valores de verdad de las variables
+        for combination_1, combination_2 in zip(var_1, var_2):
+            table_1 = dict(zip(variables_1, combination_1))  # Crear un diccionario que mapea las variables con sus valores de verdad correspondientes para la primera expresión
+            table_2 = dict(zip(variables_2, combination_2))  # Crear un diccionario que mapea las variables con sus valores de verdad correspondientes para la segunda expresión
+            result_1 = eval(expression2_1, table_1)  # Evaluar la primera expresión con los valores de verdad actuales
+            result_2 = eval(expression2_2, table_2)  # Evaluar la segunda expresión con los valores de verdad actuales
+            table_data.append([result_1, result_2])  # Agregar los resultados a la lista de resultados
+
+        # Impresión de tabla de resultados con variables
+        headers = [expression_1, expression_2]
+        print("Tabla de Resultados:")
+        print(tabulate(table_data, headers=headers, tablefmt="pretty"))  # Imprimir la tabla de resultados
+
+        # Comparación de los resultados de las dos expresiones
+        if all(x == y for x, y in table_data):
+            print("Las expresiones son equivalentes lógicas.")  # Si todos los pares de resultados son iguales, las expresiones son equivalentes lógicamente
+        else:
+            print("Las expresiones no son equivalentes lógicas.")  # Si hay al menos un par de resultados diferentes, las expresiones no son equivalentes lógicamente
     else:
-        clear_display()
-        display.insert(0, "Error")
-
-def generate():
-    global variables
-    inputst = display.get()
-    variables = list(set([char for char in inputst if char.isalpha()]))
-    if variables:
-        truth_table = list(product([True, False], repeat=len(variables)))
-        print("Truth Table:")
-        print(variables)
-        for row in truth_table:
-            print(row)
-    else:
-        print("No variables found")
-
-# ---------------Functions---------------
-# ----------------Buttons----------------
-# -----------------Row-0-----------------
-
-button = CTkButton(buttons, text='(', command=lambda:get_opers('('), width=100, height=100, font=("Mono", 30), fg_color="black", hover_color="grey", border_width=1, border_color="grey")
-button.grid(row=0, column=0)
-button = CTkButton(buttons, text=')', command=lambda:get_opers(')'), width=100, height=100, font=("Mono", 30), fg_color="black", hover_color="grey", border_width=1, border_color="grey")
-button.grid(row=0, column=1)
-button = CTkButton(buttons, text='AC', command=lambda:clear_display(), width=100, height=100, font=("Mono", 30), fg_color="black", hover_color="grey", border_width=1, border_color="grey")
-button.grid(row=0, column=2)
-button = CTkButton(buttons, text='DEL', command=lambda:undo(), width=100, height=100, font=("Mono", 30), fg_color="black", hover_color="grey", border_width=1, border_color="grey")
-button.grid(row=0, column=3)
-
-# -----------------Row-0-----------------
-# -----------------Row-1-----------------
-
-button = CTkButton(buttons, text='~', command=lambda:get_opers('~'), width=100, height=100, font=("Mono", 30), fg_color="black", hover_color="grey", border_width=1, border_color="grey")
-button.grid(row=1, column=0)
-button = CTkButton(buttons, text='∧', command=lambda:get_opers('∧'), width=100, height=100, font=("Mono", 30), fg_color="black", hover_color="grey", border_width=1, border_color="grey")
-button.grid(row=1, column=1)
-button = CTkButton(buttons, text='∨', command=lambda:get_opers('∨'), width=100, height=100, font=("Mono", 30), fg_color="black", hover_color="grey", border_width=1, border_color="grey")
-button.grid(row=1, column=2)
-button = CTkButton(buttons, text='→', command=lambda:get_opers('→'), width=100, height=100, font=("Mono", 30), fg_color="black", hover_color="grey", border_width=1, border_color="grey")
-button.grid(row=1, column=3)
-
-# -----------------Row-1-----------------
-# -----------------Row-2-----------------
-
-button = CTkButton(buttons, text='p', command=lambda:get_letters('p'), width=100, height=100, font=("Mono", 30), fg_color="black", hover_color="grey", border_width=1, border_color="grey")
-button.grid(row=2, column=0)
-button = CTkButton(buttons, text='q', command=lambda:get_letters('q'), width=100, height=100, font=("Mono", 30), fg_color="black", hover_color="grey", border_width=1, border_color="grey")
-button.grid(row=2, column=1)
-button = CTkButton(buttons, text='↔', command=lambda:get_opers('↔'), width=100, height=100, font=("Mono", 30), fg_color="black", hover_color="grey", border_width=1, border_color="grey")
-button.grid(row=2, column=2)
-button = CTkButton(buttons, text='⊕', command=lambda:get_opers('⊕'), width=100, height=100, font=("Mono", 50), fg_color="black", hover_color="grey", border_width=1, border_color="grey")
-button.grid(row=2, column=3)
-
-# -----------------Row-2-----------------
-# -----------------Row-3-----------------
-
-button = CTkButton(buttons, text='r', command=lambda:get_letters('r'), width=100, height=100, font=("Mono", 30), fg_color="black", hover_color="grey", border_width=1, border_color="grey")
-button.grid(row=3, column=0)
-button = CTkButton(buttons, text='s', command=lambda:get_letters('s'), width=100, height=100, font=("Mono", 30), fg_color="black", hover_color="grey", border_width=1, border_color="grey")
-button.grid(row=3, column=1)
-button = CTkButton(buttons, text='=', command=lambda:generate(), width=200, height=100, font=("Mono", 30), fg_color="black", hover_color="grey", border_width=1, border_color="grey")
-button.grid(row=3, column=2,columnspan=2)
-
-# -----------------Row-2-----------------
-
-# ----------------Buttons----------------
-
-
-
-
-app.mainloop()
+        print("Entre las expresiones añada una coma(todo sin espacios).")
+        
