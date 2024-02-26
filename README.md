@@ -1,42 +1,61 @@
-# pyTruthTable - Truth Table Generator
+# Truth Table Generator
 
-This Python script utilizes the `customtkinter` library to provide a graphical user interface for generating truth tables based on logical expressions input by the user. It supports basic logical operations and variables.
+This is a simple GUI application built with `customtkinter` and `ttg` (Truth Table Generator) libraries to generate truth tables for logical expressions.
 
 ## Dependencies
 
-- `customtkinter`: A library that enhances Tkinter widgets with a more modern and customizable look.
-- `itertools`: A standard Python module for efficient looping and is used here for generating product combinations to create truth tables.
-
-To install `customtkinter`, run:
-
-```bash
-pip install customtkinter
-```
-
-## Setup and Execution
-
-Ensure you have Python installed on your system along with the required `customtkinter` library. Save the script to a file, for example, `truth_table_generator.py`, and run it using Python:
-
-```bash
-python truth_table_generator.py
-```
-
-## Features
-
-- **Dark Mode Interface:** The application uses a dark appearance mode for reduced eye strain and improved readability.
-- **Logical Expression Input:** Users can input logical expressions using variables (`p`, `q`, `r`, `s`) and operators (`~`, `∧`, `∨`, `→`, `↔`, `⊕`).
-- **Truth Table Generation:** Upon pressing the `=` button, the application generates and prints the truth table for the given expression in the console.
-- **Editing Functions:** Users can clear the entire input or delete the last character using the `AC` and `DEL` buttons, respectively.
+- `customtkinter`: Used for creating the GUI elements with a modern look.
+- `ttg`: Used for generating the truth tables based on the given variables and expressions.
 
 ## Usage
 
-1. **Start the Application:** Launch the script to open the GUI.
-2. **Enter Logical Expression:** Use the buttons on the interface to input your logical expression. Each button press adds a corresponding character to the input field.
-3. **Generate Truth Table:** Press the `=` button to generate the truth table. The variables and their truth values will be printed in the console.
-4. **Edit or Clear Input:** Use the `AC` button to clear the input field or the `DEL` button to remove the last character.
+1. **Set Appearance Mode**: The appearance mode is set to "grey" for the application.
+   ```python
+   set_appearance_mode("grey")
+   ```
 
-## GUI Components
+2. **Create Main Application Window**:
+   ```python
+   app = CTk()
+   app.title("Truth Table")
+   app.geometry("1000x600")
+   ```
 
-- **Input Field:** A large entry where the logical expression is displayed.
-- **Buttons:** For inputting variables, operators, and controlling the display (clear and delete).
-- **Truth Table Output:** Upon pressing the `=` button, the truth table is generated and printed to the console, not in the GUI itself.
+3. **Generate Truth Table Function**:
+   - This function is triggered by the "Generate" button.
+   - It takes the variables and expression from the input fields, splits them by commas, and generates the truth table using the `Truths` class from the `ttg` library.
+   - If there is an error in the input format or expression, it displays "Something went wrong".
+   ```python
+   def Generate_table():
+       global result
+       vars = str(variables.get())
+       statement = str(expression.get())
+       if all(i.isalpha() or i == ',' for i in vars):
+           vars = vars.split(',')
+           statement = statement.split(',')
+           try:
+               result = Truths(vars, statement, ints=False).as_prettytable()
+           except:
+               result = 'Something went wrong'
+       output.configure(text=result)
+   ```
+
+4. **GUI Layout**:
+   - Title label with "Generador de tablas de verdad".
+   - Input fields for variables and expression.
+   - "Generate" button to trigger the truth table generation.
+   - Output label to display the generated truth table or error message.
+
+5. **Main Event Loop**:
+   ```python
+   app.mainloop()
+   ```
+
+## Example
+
+To generate a truth table for the expression "A and B" with variables "A, B", enter the following:
+
+- Variables: `A, B`
+- Expression: `A and B`
+
+Click "Generate" to view the truth table.
