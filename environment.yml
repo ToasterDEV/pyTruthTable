@@ -13,3 +13,4 @@ dependencies:
     - truth-table-generator
     - CTkTable
     - nuitka
+    -
