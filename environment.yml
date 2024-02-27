@@ -9,6 +9,7 @@ dependencies:
   - pip
   - libpython-static
   - customtkinter
+  - tk
   - pip:
     - truth-table-generator
     - CTkTable
