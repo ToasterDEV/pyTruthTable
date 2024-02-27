@@ -5,9 +5,6 @@ on: [push]
 jobs:
   lint:
     runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 5
-
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.11
@@ -51,6 +48,7 @@ jobs:
           use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
   nuitka-build:
     strategy:
+      max-parallel: 5
       matrix:
         os: [ubuntu-latest, windows-latest] #, macos-latest]
 
