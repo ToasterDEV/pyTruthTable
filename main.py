@@ -25,7 +25,7 @@ def final_result(variables, expression2):
 def generate_table():
     global output
 
-    # Pedir al usuario que ingrese la expresión
+    # Pedirle al usuario que ingrese la expresión
     expression = expressioninput.get()
 
     output.delete(0.0, "end")
@@ -185,7 +185,7 @@ table = CTkTable(
                  )
 table.place(anchor=CENTER, relx=.5, rely=.5)
 
-output = CTkTextbox(master=output_frame, width=1000, height=400, font=("Consolas", 12), activate_scrollbars=True)
+output = CTkTextbox(master=output_frame, width=1000, height=400, font=("Consolas", 16), activate_scrollbars=True)
 output.grid(sticky="nsew")
 
 app.mainloop()

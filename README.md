@@ -1,86 +1,57 @@
 # Truth Table Generator
 
-This program is a graphical user interface (GUI) application that generates truth tables for logical expressions and verifies their logical equivalences. It is built using the `customtkinter` library for the GUI components and utilizes several other libraries for processing the logical expressions and generating the tables.
+This program generates truth tables and verifies logical equivalences for logical expressions using the `customtkinter` library for the graphical user interface and the `ttg` library for generating truth tables.
 
-## Features
+## Dependencies
 
-- Generate truth tables for single logical expressions.
-- Check logical equivalence between two logical expressions.
-- User-friendly GUI with clear instructions and input validation.
+- `customtkinter`: Used for creating the graphical user interface.
+- `CTkTable`: Used for creating tables in CustomTkinter.
+- `itertools`: Used for generating product combinations of truth values.
+- `tabulate`: Used for formatting the truth tables in a tabular format.
+- `re`: Used for working with regular expressions.
+- `ttg`: Used for generating truth tables (Teorías y Teoremas Gráficos).
 
-## Requirements
+## Functions
 
-- Python 3.x
-- Libraries: `customtkinter`, `CTkTable`, `itertools`, `tabulate`, `re`
+### `verificar_entrada(entrada)`
+
+Verifies if an expression input is a valid expression. Currently checks for lowercase letters and specified symbols.
+
+**Parameters:**
+
+- `entrada`: The expression input to be verified.
+
+**Returns:** `bool` indicating whether the expression is valid.
+
+### `final_result(variables, expression2)`
+
+Generates and prints the truth table for the given variables and expression.
+
+**Parameters:**
+
+- `variables`: List of variables in the expression.
+- `expression2`: The expression with operators replaced by their Python equivalents.
+
+### `generate_table()`
+
+Main function that handles the generation of the truth table based on the user input. It processes the input expression, replaces operators with their Python equivalents, and generates the truth table using the `Truths` class from the `ttg` library.
+
+## Main GUI Components
+
+- **Title Frame:** Displays the title of the application.
+- **Specifications Frame:** Displays the table of symbols and their meanings.
+- **Input Frame:** Contains the input field for the logical expression and the generate button.
+- **Output Frame:** Displays the generated truth table and the result of logical equivalence verification.
 
 ## Usage
 
 1. Run the program.
-2. Enter a logical expression in the input field. Use the following symbols for logical operators:
-   - `^` for AND
-   - `v` for OR
-   - `-` for NOT
-   - `x` for XOR
-   - `/` for implication
-   - `|` for biconditional
-   - `,` for checking equivalence between two expressions
-3. Click the "Generate" button to generate the truth table.
-4. If you entered two expressions separated by a comma, the program will also check if they are logically equivalent and display the result.
-
-## Code Explanation
-
-1. **Imports:**
-   - `customtkinter` for the GUI elements.
-   - `CTkTable` for creating tables in CustomTkinter.
-   - `product` from `itertools` for generating all combinations of truth values.
-   - `tabulate` for formatting the truth tables.
-   - `re` for working with regular expressions.
-
-2. **Setting Appearance:**
-   - `set_appearance_mode("grey")` sets the theme of the GUI to grey.
-
-3. **Function Definitions:**
-   - `verificar_entrada(entrada)`: Checks if the input is a valid logical expression using a regular expression.
-   - `generate_table()`: Main function that generates the truth table based on the user's input. It handles both single expressions and comparisons between two expressions for logical equivalence.
-
-4. **GUI Layout:**
-   - The GUI is divided into several frames: `title_frame`, `specs_frame`, `input_frame`, and `output_frame`.
-   - `title_frame` contains the title label.
-   - `specs_frame` displays a table showing the symbols used in logical expressions and their meanings.
-   - `input_frame` contains the input field where the user enters the logical expression and a button to generate the truth table.
-   - `output_frame` contains a textbox where the generated truth table and the result of the logical equivalence check (if applicable) are displayed.
-
-5. **Main GUI Loop:**
-   - `app.mainloop()` starts the GUI application.
-
-## Example
-
-Input: `a^b`
-Output:
-```
-Table of Truth
-+-----+-----+-------+
-|   a |   b | a ^ b |
-+-----+-----+-------+
-| True|True |  True |
-| True|False| False |
-|False|True | False |
-|False|False| False |
-+-----+-----+-------+
-```
-
-Input: `a^b,a|b`
-Output:
-```
-Table of Truth
-+-------+-------+
-| a ^ b | a | b |
-+-------+-------+
-|  True |  True |
-| False |  True |
-| False |  True |
-| False | False |
-+-------+-------+
-
-The expressions are not logically equivalent.
-```
+2. Enter a logical expression in the input field. Use lowercase letters for variables and the following symbols for operators:
+   - `^`: AND
+   - `v`: OR
+   - `-`: NOT
+   - `x`: XOR
+   - `/`: Implication
+   - `|`: Biconditional
+   - `,`: Equivalence (separate two expressions with a comma for equivalence checking)
+3. Click the "Generate" button to generate the truth table and verify logical equivalence if applicable.

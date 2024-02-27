@@ -7,7 +7,9 @@ dependencies:
   - python>=3.8
   - anaconda
   - pip
+  - libpython-static
   - customtkinter
   - pip:
     - truth-table-generator
     - CTkTable
+    - nuitka
