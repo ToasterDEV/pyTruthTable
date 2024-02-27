@@ -3,17 +3,17 @@ name: Python Package using Conda
 on: [push]
 
 jobs:
-  build-linux:
+  lint:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 5
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.10
+    - name: Set up Python 3.11
       uses: actions/setup-python@v3
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: Add conda to system path
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
@@ -38,7 +38,13 @@ jobs:
     steps:
       - name: Check-out repository
         uses: actions/checkout@v3
-
+      - name: Add conda to system path
+        run: |
+          # $CONDA is an environment variable pointing to the root of the miniconda directory
+          echo $CONDA/bin >> $GITHUB_PATH
+      - name: Install dependencies
+        run: |
+          conda env update --file environment.yml --name base
       - name: Build Executable
         uses: Nuitka/Nuitka-Action@main
         with:
@@ -47,8 +53,6 @@ jobs:
           onefile: true
           standalone: true
           enable-plugins: tk-inter
-
-
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
