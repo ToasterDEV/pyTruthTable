@@ -66,6 +66,9 @@ jobs:
       - name: Install dependencies
         run: |
           conda env update --file environment.yml --name base
+      - name: Install Tkinter for Ubuntu
+        if: ${{ runner.os == 'Linux' }}
+        run: sudo apt-get install python3-tk
       - name: Build Executable
         uses: Nuitka/Nuitka-Action@main
         with:
