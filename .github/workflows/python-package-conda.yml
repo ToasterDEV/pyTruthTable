@@ -62,7 +62,7 @@ jobs:
         with:
           auto-activate-base: true
           auto-update-conda: true
-          activate-environment: "base"
+          activate-environment: ""
       - name: Install dependencies
         run: |
           conda env update --file environment.yml --name base
