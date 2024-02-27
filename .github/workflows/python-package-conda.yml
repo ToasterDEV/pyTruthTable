@@ -51,18 +51,15 @@ jobs:
       max-parallel: 5
       matrix:
         os: [ubuntu-latest, windows-latest] #, macos-latest]
-
     runs-on: ${{ matrix.os }}
-
     steps:
       - name: Check-out repository
         uses: actions/checkout@v3
       - uses: conda-incubator/setup-miniconda@v3
         with:
           auto-activate-base: true
-          activate-environment: ""
-      - name: Update Conda
-        run: conda update -n base -c defaults conda
+          auto-update-conda: true
+          activate-environment: "base"
       - name: Install dependencies
         run: |
           conda env update --file environment.yml --name base
