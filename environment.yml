@@ -8,10 +8,10 @@ dependencies:
   - anaconda
   - pip
   - libpython-static
+  - nuitka
   - customtkinter
   - tk
+  -
   - pip:
     - truth-table-generator
     - CTkTable
-    - nuitka
-    - customtkinter
