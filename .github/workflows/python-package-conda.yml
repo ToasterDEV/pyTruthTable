@@ -50,11 +50,14 @@ jobs:
     strategy:
       max-parallel: 5
       matrix:
-        os: [ubuntu-latest, windows-latest] #, macos-latest]
-    runs-on: ${{ matrix.os }}
+        sys:
+          - { os: windows-latest, shell: pwsh }
+          - { os: ubuntu-latest,  shell: bash  }
+          #- { os: macos-latest,   shell: bash  }
+    runs-on: ${{ matrix.sys.os }}
     defaults:
       run:
-        shell: bash
+        shell: ${{ matrix.sys.shell }}
     steps:
       - name: Check-out repository
         uses: actions/checkout@v3
