@@ -13,4 +13,4 @@ dependencies:
     - truth-table-generator
     - CTkTable
     - nuitka
-    -
+    - conda-libmamba-solver
