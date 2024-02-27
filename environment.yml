@@ -15,3 +15,4 @@ dependencies:
   - pip:
     - truth-table-generator
     - CTkTable
+    - nuitka
