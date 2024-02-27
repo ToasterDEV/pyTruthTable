@@ -73,7 +73,7 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
         run: sudo apt-get install python3-tk
       - name: Build Executable
-        run: python -m nuitka --standalone --onefile --enable-plugin=tk-inter --include-package=customtkinter main.py
+        run: conda run -n base python -m nuitka --standalone --onefile --enable-plugin=tk-inter --include-package=customtkinter main.py
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
