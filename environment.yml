@@ -6,6 +6,7 @@ channels:
 dependencies:
   - python>=3.8
   - anaconda
+  - conda-libmamba-solver
   - pip
   - libpython-static
   - customtkinter
@@ -13,4 +14,3 @@ dependencies:
     - truth-table-generator
     - CTkTable
     - nuitka
-    - conda-libmamba-solver
