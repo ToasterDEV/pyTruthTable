@@ -4,6 +4,8 @@
 ---
 name: Build executables or extension modules from Python projects
 
+on: [push]
+
 branding:
   icon: "package"
   color: "blue"
